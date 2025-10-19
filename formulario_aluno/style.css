@@ -87,3 +87,32 @@ th {
 .btn-delete {
     background-color: #dc3545;
 }
+
+/* style.css (adicione este código ao final do arquivo) */
+
+.reports-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.reports-actions button {
+    width: auto;
+    padding: 8px 15px;
+    background-color: #6c757d;
+}
+
+.reports-actions button:hover {
+    background-color: #5a6268;
+}
+
+#reports-output {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    padding: 15px;
+    min-height: 100px;
+    white-space: pre-wrap; /* Preserva quebras de linha e espaços */
+    font-family: monospace;
+}

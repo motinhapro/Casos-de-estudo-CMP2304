@@ -1,5 +1,4 @@
 class Aluno {
-
     constructor(nome, idade, curso, notaFinal) {
         this.nome = nome;
         this.idade = idade;
@@ -41,7 +40,6 @@ document.addEventListener('DOMContentLoaded', () => {
             // Usamos o método isAprovado() para definir a situação
             const situacao = student.isAprovado() ? 'Aprovado' : 'Reprovado';
 
-            // Preenche a linha com os dados do aluno
             row.innerHTML = `
                 <td>${student.nome}</td>
                 <td>${student.idade}</td>
@@ -49,8 +47,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td>${student.notaFinal}</td>
                 <td>${situacao}</td>
                 <td>
-                    <button class="btn-edit" onclick="editStudent(${index})">Editar</button>
-                    <button class="btn-delete" onclick="deleteStudent(${index})">Excluir</button>
+                    <button class="btn-edit" data-index="${index}">Editar</button>
+                    <button class="btn-delete" data-index="${index}">Excluir</button>
                 </td>
             `;
 
@@ -83,9 +81,13 @@ document.addEventListener('DOMContentLoaded', () => {
             // Se estiver editando, atualiza o aluno existente
             students[editingStudentId] = newStudent;
             editingStudentId = null; // Reseta o modo de edição
+            // Feedback para o usuário ao editar
+            alert(`Aluno ${newStudent.nome} foi atualizado com sucesso!`);
         } else {
             // Adiciona o novo aluno ao array
             students.push(newStudent);
+            // Feedback para o usuário ao salvar
+            alert(`Aluno ${newStudent.nome} foi cadastrado com sucesso!`);
         }
 
         // Limpa o formulário
@@ -95,25 +97,49 @@ document.addEventListener('DOMContentLoaded', () => {
         renderTable();
     });
 
-    // Declara as funções de editar e excluir no escopo global para o `onclick` funcionar
-    window.editStudent = (index) => {
+    studentsTableBody.addEventListener('click', (event) => {
+        // Identifica o alvo do clique
+        const target = event.target;
+
+        // Verifica se o botão de editar foi clicado
+        if (target.classList.contains('btn-edit')) {
+            const index = parseInt(target.dataset.index); // Pega o 'data-index'
+            editStudent(index);
+        }
+
+        // Verifica se o botão de excluir foi clicado
+        if (target.classList.contains('btn-delete')) {
+            const index = parseInt(target.dataset.index); // Pega o 'data-index'
+            deleteStudent(index);
+        }
+    });
+
+    const editStudent = (index) => {
         const student = students[index];
         
         // Preenche o formulário com os dados do aluno a ser editado
         document.getElementById('nome').value = student.nome;
         document.getElementById('idade').value = student.idade;
         document.getElementById('curso').value = student.curso;
-        document.getElementById('nota').value = student.nota;
+        document.getElementById('nota').value = student.notaFinal;
         
         editingStudentId = index; // Define o índice do aluno que está sendo editado
     };
 
-    window.deleteStudent = (index) => {
-        // Remove o aluno do array pelo índice
-        students.splice(index, 1);
-        
-        // Renderiza a tabela novamente
-        renderTable();
+    const deleteStudent = (index) => {
+        const studentName = students[index].nome;
+
+        // Pede confirmação antes de excluir para uma melhor experiência
+        if (confirm(`Você tem certeza que deseja excluir o aluno ${studentName}?`)) {
+            // Remove o aluno do array pelo índice
+            students.splice(index, 1);
+
+            // Feedback para o usuário ao excluir
+            alert(`Aluno ${studentName} foi excluído.`);
+            
+            // Renderiza a tabela novamente
+            renderTable();
+        }
     };
 
     // Renderiza a tabela inicialmente (vazia)

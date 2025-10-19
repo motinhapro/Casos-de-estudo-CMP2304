@@ -1,3 +1,5 @@
+// script.js (Versão Final - Exercício 4)
+
 class Aluno {
     constructor(nome, idade, curso, notaFinal) {
         this.nome = nome;
@@ -133,14 +135,79 @@ document.addEventListener('DOMContentLoaded', () => {
         if (confirm(`Você tem certeza que deseja excluir o aluno ${studentName}?`)) {
             // Remove o aluno do array pelo índice
             students.splice(index, 1);
-
             // Feedback para o usuário ao excluir
             alert(`Aluno ${studentName} foi excluído.`);
-            
             // Renderiza a tabela novamente
             renderTable();
         }
     };
+    
+    // Seleciona os elementos da nova seção no HTML.
+    const reportsOutput = document.getElementById('reports-output');
+    
+    // Adiciona o evento de clique para o botão 'Listar Aprovados'.
+    document.getElementById('btn-aprovados').addEventListener('click', () => {
+        // 'filter' cria um novo array contendo apenas os alunos que satisfazem a condição.
+        const aprovados = students.filter(student => student.isAprovado());
+        // 'map' transforma o array de alunos aprovados em um array contendo apenas os seus nomes.
+        const nomesAprovados = aprovados.map(student => student.nome);
+        
+        reportsOutput.innerHTML = `<strong>Alunos Aprovados (${nomesAprovados.length}):</strong>\n${nomesAprovados.join('\n')}`;
+    });
+
+    // Adiciona o evento de clique para o botão 'Média das Notas'.
+    document.getElementById('btn-media-notas').addEventListener('click', () => {
+        if (students.length === 0) {
+            reportsOutput.textContent = 'Não há alunos para calcular a média.';
+            return;
+        }
+        // 'reduce' acumula um valor. Aqui, somamos todas as notas finais.
+        const somaDasNotas = students.reduce((soma, student) => soma + student.notaFinal, 0);
+        const media = somaDasNotas / students.length;
+        
+        reportsOutput.textContent = `A média das notas finais é: ${media.toFixed(2)}`;
+    });
+
+    // Adiciona o evento de clique para o botão 'Média das Idades'.
+    document.getElementById('btn-media-idades').addEventListener('click', () => {
+        if (students.length === 0) {
+            reportsOutput.textContent = 'Não há alunos para calcular a média.';
+            return;
+        }
+        // Usamos 'reduce' novamente para somar todas as idades.
+        const somaDasIdades = students.reduce((soma, student) => soma + student.idade, 0);
+        const media = somaDasIdades / students.length;
+        
+        reportsOutput.textContent = `A média de idade dos alunos é: ${media.toFixed(1)} anos`;
+    });
+
+    // Adiciona o evento de clique para o botão 'Ordenar por Nome'.
+    document.getElementById('btn-ordenar-nomes').addEventListener('click', () => {
+        // Primeiro, extraímos apenas os nomes com 'map'.
+        const nomes = students.map(student => student.nome);
+        // 'sort' ordena o array de nomes em ordem alfabética.
+        nomes.sort();
+        
+        reportsOutput.innerHTML = `<strong>Nomes em Ordem Alfabética:</strong>\n${nomes.join('\n')}`;
+    });
+
+    // Adiciona o evento de clique para o botão 'Alunos por Curso'.
+    document.getElementById('btn-alunos-curso').addEventListener('click', () => {
+        // 'reduce' é usado para agrupar e contar os alunos por curso.
+        const contagemCursos = students.reduce((contador, student) => {
+            const curso = student.curso;
+            contador[curso] = (contador[curso] || 0) + 1; // Incrementa a contagem para o curso.
+            return contador;
+        }, {}); // O {} é o objeto inicial que servirá como nosso contador.
+
+        let resultado = '<strong>Alunos por Curso:</strong>\n';
+        // Itera sobre o objeto de contagem para formatar a saída.
+        for (const curso in contagemCursos) {
+            resultado += `${curso}: ${contagemCursos[curso]} aluno(s)\n`;
+        }
+        
+        reportsOutput.innerHTML = resultado;
+    });
 
     // Renderiza a tabela inicialmente (vazia)
     renderTable();

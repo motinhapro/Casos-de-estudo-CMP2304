@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Adicionamos um único event listener ao corpo da tabela.
     employeeTableBody.addEventListener('click', (event) => {
-        const target = event.target; 
+        const target = event.target;
 
         // Verifica se o botão de editar foi clicado
         if (target.classList.contains('btn-edit')) {
@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const editEmployee = (index) => {
         const func = funcionarios[index];
-        
+
         document.getElementById('nome').value = func.nome;
         document.getElementById('idade').value = func.idade;
         document.getElementById('cargo').value = func.cargo;
@@ -116,4 +116,54 @@ document.addEventListener('DOMContentLoaded', () => {
             renderTable();
         }
     };
+
+    // Seleciona a área de saída e os botões de relatório do HTML.
+    const reportsOutput = document.getElementById('reports-output');
+    
+    // Relatório 1: Listar funcionários com salário maior que R$ 5000.
+    document.getElementById('btn-salario-maior-5000').addEventListener('click', () => {
+        // Usa 'filter' para criar um novo array apenas com funcionários que atendem à condição. 
+        const comSalarioAlto = funcionarios.filter(func => func.salario > 5000);
+        let resultado = `<strong>Funcionários com Salário > R$ 5000:</strong>\n\n`;
+        if (comSalarioAlto.length === 0) {
+            resultado += "Nenhum funcionário encontrado.";
+        } else {
+            // Usa 'map' para formatar a exibição de cada funcionário encontrado.
+            resultado += comSalarioAlto.map(func => `${func.nome} (Salário: R$ ${func.salario.toFixed(2)})`).join('\n');
+        }
+        reportsOutput.innerHTML = resultado;
+    });
+
+    // Relatório 2: Mostrar a média salarial dos funcionários.
+    document.getElementById('btn-media-salarial').addEventListener('click', () => {
+        if (funcionarios.length === 0) {
+            reportsOutput.textContent = "Não há funcionários para calcular a média.";
+            return;
+        }
+        // Usa 'reduce' para somar todos os salários a partir de um valor inicial 0. 
+        const somaTotal = funcionarios.reduce((soma, func) => soma + func.salario, 0);
+        const media = somaTotal / funcionarios.length;
+        reportsOutput.textContent = `A média salarial de todos os funcionários é: R$ ${media.toFixed(2)}`;
+    });
+
+    // Relatório 3: Listar apenas os cargos únicos (sem repetição).
+    document.getElementById('btn-cargos-unicos').addEventListener('click', () => {
+        // Primeiro, usa 'map' para criar um array contendo todos os cargos.
+        const todosOsCargos = funcionarios.map(func => func.cargo);
+        // Em seguida, 'new Set' remove automaticamente as duplicatas. 
+        const cargosUnicos = [...new Set(todosOsCargos)];
+        
+        reportsOutput.innerHTML = `<strong>Cargos Únicos na Empresa:</strong>\n\n${cargosUnicos.join('\n')}`;
+    });
+
+    // Relatório 4: Criar uma lista de nomes em maiúsculo.
+    document.getElementById('btn-nomes-maiusculo').addEventListener('click', () => {
+        // Usa 'map' para criar um novo array, aplicando a função toUpperCase() em cada nome. 
+        const nomesMaiusculos = funcionarios.map(func => func.nome.toUpperCase());
+
+        reportsOutput.innerHTML = `<strong>Nomes dos Funcionários (em maiúsculo):</strong>\n\n${nomesMaiusculos.join('\n')}`;
+    });
+
+    // Renderiza a tabela uma vez no início para garantir que a UI esteja pronta
+    renderTable();
 });

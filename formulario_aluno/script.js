@@ -1,3 +1,23 @@
+class Aluno {
+
+    constructor(nome, idade, curso, notaFinal) {
+        this.nome = nome;
+        this.idade = idade;
+        this.curso = curso;
+        this.notaFinal = notaFinal;
+    }
+
+    // Método que verifica se o aluno foi aprovado
+    isAprovado() {
+        return this.notaFinal >= 7;
+    }
+
+    // Método que retorna uma string formatada com os dados do aluno
+    toString() {
+        return `Nome: ${this.nome}, Idade: ${this.idade}, Curso: ${this.curso}, Nota: ${this.notaFinal}`;
+    }
+}
+
 // Aguarda o DOM estar completamente carregado antes de executar o script
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -18,17 +38,28 @@ document.addEventListener('DOMContentLoaded', () => {
         students.forEach((student, index) => {
             const row = document.createElement('tr'); // Cria o <tr>
 
+            // Usamos o método isAprovado() para definir a situação
+            const situacao = student.isAprovado() ? 'Aprovado' : 'Reprovado';
+
             // Preenche a linha com os dados do aluno
             row.innerHTML = `
                 <td>${student.nome}</td>
                 <td>${student.idade}</td>
                 <td>${student.curso}</td>
-                <td>${student.nota}</td>
+                <td>${student.notaFinal}</td>
+                <td>${situacao}</td>
                 <td>
                     <button class="btn-edit" onclick="editStudent(${index})">Editar</button>
                     <button class="btn-delete" onclick="deleteStudent(${index})">Excluir</button>
                 </td>
             `;
+
+            // Adiciona uma classe CSS para colorir a linha do aluno aprovado/reprovado
+            if (student.isAprovado()) {
+                row.style.backgroundColor = '#d4edda'; // Verde claro para aprovados
+            } else {
+                row.style.backgroundColor = '#f8d7da'; // Vermelho claro para reprovados
+            }
 
             // Adiciona a linha ao corpo da tabela
             studentsTableBody.appendChild(row);
@@ -43,10 +74,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const nome = document.getElementById('nome').value;
         const idade = parseInt(document.getElementById('idade').value);
         const curso = document.getElementById('curso').value;
-        const nota = parseFloat(document.getElementById('nota').value);
+        const notaFinal = parseFloat(document.getElementById('nota').value);
 
         // Cria um objeto para o novo aluno
-        const newStudent = { nome, idade, curso, nota };
+        const newStudent = new Aluno(nome, idade, curso, notaFinal);
 
         if (editingStudentId !== null) {
             // Se estiver editando, atualiza o aluno existente

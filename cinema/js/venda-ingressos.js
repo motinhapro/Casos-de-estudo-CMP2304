@@ -3,6 +3,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const selectSessao = document.getElementById('sessao');
     const formVenda = document.getElementById('form-venda');
 
+    // 1. Pega os parâmetros da URL 
+    const urlParams = new URLSearchParams(window.location.search);
+    const sessaoIdFromUrl = urlParams.get('sessaoId');
+    
     // --- CARREGAMENTO DINÂMICO DAS SESSÕES ---
 
     // 1. Pega todos os dados necessários do localStorage
@@ -29,6 +33,11 @@ document.addEventListener('DOMContentLoaded', () => {
             selectSessao.appendChild(option);
         }
     });
+    
+    // 2. Se um ID de sessão foi encontrado na URL, define o valor do select
+    if (sessaoIdFromUrl) {
+        selectSessao.value = sessaoIdFromUrl;
+    }
 
     // --- LÓGICA DE SALVAMENTO DA VENDA ---
 
@@ -58,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Adiciona o novo ingresso
         ingressos.push(ingresso);
 
-        // Salva a lista atualizada no localStorage na chave 'ingressos' [cite: 104]
+        // Salva a lista atualizada no localStorage na chave 'ingressos'
         localStorage.setItem('ingressos', JSON.stringify(ingressos));
 
         alert('Venda confirmada com sucesso!');
